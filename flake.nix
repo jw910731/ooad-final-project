@@ -30,8 +30,6 @@
                 # https://devenv.sh/reference/options/
                 packages = [ ];
 
-                env.DATABASE_URL = "pgsql://app:app@localhost/app";
-
                 languages.javascript = {
                   enable = true;
                 };
@@ -66,6 +64,7 @@
                 };
                 services.postgres = {
                   enable = true;
+                  listen_addresses = "localhost";
                   initialDatabases = [{
                     name = "app";
                     user = "app";
