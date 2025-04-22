@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -33,6 +35,16 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    public function courses() : BelongsToMany
+    {
+        return $this->belongsToMany(Course::class, 'course_user', 'user_id', 'course_id')->withPivot('role');
+    }
+
+    public function userScores() : HasMany
+    {
+        return $this->hasMany(UserScore::class);
+    }
 
     /**
      * Get the attributes that should be cast.
