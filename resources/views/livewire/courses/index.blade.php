@@ -9,12 +9,12 @@ state(['courses' => fn () => auth()->user()->courses()->get()]);
     @if(auth()->user()->system_admin)
         <flux:button :href="route('courses.create')">Add</flux:button>
     @endif
-    <flux:container>
+    <flux:container class="flex">
         @foreach($courses as $course)
-            <div class="flex flex-col gap-6 ">
+            <x-card class="flex-auto flex">
                 <flux:heading class="flex items-center gap-2">{{ $course->title }}</flux:heading>
                 <flux:text class="mt-2">{{ $course->description }}</flux:text>
-            </div>
+            </x-card>
         @endforeach
     </flux:container>
 </section>
