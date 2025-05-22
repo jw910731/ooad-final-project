@@ -69,4 +69,13 @@ class User extends Authenticatable
             ->map(fn (string $name) => Str::of($name)->substr(0, 1))
             ->implode('');
     }
+    /**
+     * Create user
+     */
+    public static function create( array $validatedData): User
+    {
+        $newUser = new User;
+        $newUser->fillable = $validatedData;
+        return $newUser;
+    }
 }
