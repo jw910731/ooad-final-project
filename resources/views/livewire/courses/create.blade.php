@@ -15,7 +15,7 @@ new class extends Component {
     #[Validate('required')]
     public ?int $user_id = null;
 
-    public function create()
+    public function create(): void
     {
         $user = User::find($this->user_id);
         $user->courses()->create([
