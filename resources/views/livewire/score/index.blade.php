@@ -19,6 +19,9 @@ mount(function (Course $course) {
 
 ?>
     <flux:container>
+        @if(auth()->user()->system_admin)
+            <flux:button :href="route('score.create',[$course->id])">Add</flux:button>
+        @endif
         @foreach($course->scores()->get() as $score)
             <a href="{{route('score.show', [$course, $score])}}">
                 <x-card class="flex-auto flex m-6">
