@@ -20,10 +20,13 @@ Route::middleware(['auth', 'verified', AdminMiddleware::class])->group(function 
 Route::middleware(['auth', 'verified'])->group(function () {
     Volt::route('courses', 'courses.index')->name('courses.index');
     Volt::route('courses/{course}', 'courses.show')->name('courses.show');
-    Volt::route('courses/{course}/assignment', 'assignment.index')->name('assignment.index');
-    Volt::route('courses/{course}/assignment/{assignment}', 'assignment.show')->name('assignment.show');
+    Volt::route('courses/{course}/assignment', 'assignments.index')->name('assignment.index');
+    Volt::route('courses/{course}/assignment/create', 'assignments.create')->name('assignment.create');
+    Volt::route('courses/{course}/assignment/{assignment}', 'assignments.show')->name('assignment.show');
     Volt::route('courses/{course}/score', 'score.index')->name('score.index');
     Volt::route('courses/{course}/score/{score}', 'score.show')->name('score.show');
+    //Volt::route('assignments', 'assignments.index')->name('assignments.index');
+
     Route::get('api/user_search/search', [UserSearchController::class, 'search'])->name('userSearch.search');
 });
 
