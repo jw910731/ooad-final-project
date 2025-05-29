@@ -8,30 +8,21 @@ use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
 use Illuminate\View\View;
 
-//use function Livewire\Volt\{booted, layout, mount, state};
-
-//layout('components.layouts.course');
-
-//state(['course']);
-/*
-booted(function () {
-    $this->attributes->add(new Layout('components.layouts.course', ['course' => $this->course]));
-});*/
 
 new #[Layout('components.layouts.course')]
 class extends Component {
     public Course $course;
     #[Validate('required|string')]
-    public string $title = '';
+    public $title = '';
 
     #[Validate('required|string')]
-    public string $description = '';
+    public $description = '';
 
     #[Validate('required|numeric')]
-    public ?int $max_point = null;
+    public $max_point = null;
 
-    #[Validate('required')]
-    public ?int $assignment_id = null;
+    #[Validate('required|exists:assignments,id')]
+    public $assignment_id = null;
 
     public function mount(Course $course): void
     {
@@ -45,16 +36,17 @@ class extends Component {
 
     public function create(): void
     {
+        $validated = $this->validate();
         $course = Course::find($this->course->id);
         $score = $course->scores()->create([
-            'title' => $this->title,
-            'description' => $this->description,
+            'title' => $validated['title'],
+            'description' => $validated['description'],
             'course_id' => $this->course->id,
-            'max_point' => $this->max_point,
-            'order' => 1,//i dont know how order effect us
+            'max_point' => $validated['max_point'],
+            'order' => 1, //i dont know how order effect us
         ]);
         //dd($score);
-        $assignment = Assignment::find($this->assignment_id);
+        $assignment = Assignment::find($validated['assignment_id']);
         $assignment->update([
             'score_id' => $score->id,
         ]);
