@@ -73,11 +73,9 @@
             </a>
 
             <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Platform')">
-                    <flux:navlist.item icon="layout-grid" :href="route('courses.index')" :current="request()->routeIs('courses.index')" wire:navigate>
-                    {{ __('Dashboard') }}
-                    </flux:navlist.item>
-                </flux:navlist.group>
+                <flux:navlist.item icon="layout-grid" :href="route('courses.index')" :current="request()->routeIs('courses.index')" wire:navigate>
+                {{ __('Courses') }}
+                </flux:navlist.item>
             </flux:navlist>
 
             <flux:spacer />
