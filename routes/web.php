@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssignmentSearchController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\UserSearchController;
 use App\Http\Middleware\AdminMiddleware;
@@ -23,11 +24,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Volt::route('courses/{course}/assignment', 'assignments.index')->name('assignment.index');
     Volt::route('courses/{course}/assignment/create', 'assignments.create')->name('assignment.create');
     Volt::route('courses/{course}/assignment/{assignment}', 'assignments.show')->name('assignment.show');
-    Volt::route('courses/{course}/score', 'score.index')->name('score.index');
-    Volt::route('courses/{course}/score/{score}', 'score.show')->name('score.show');
-    //Volt::route('assignments', 'assignments.index')->name('assignments.index');
-
+    Volt::route('courses/{course}/score', 'scores.index')->name('score.index');
+    Volt::route('courses/{course}/score/create', 'scores.create')->name('score.create');
+    Volt::route('courses/{course}/score/{score}', 'scores.show')->name('score.show');
     Route::get('api/user_search/search', [UserSearchController::class, 'search'])->name('userSearch.search');
+    Route::get('api/assignment_search/search', [AssignmentSearchController::class, 'search'])->name('assignmentSearch.search');
+    Volt::route('courses/{course}/member', 'members.index')->name('member.index');
 });
 
 Route::middleware(['auth'])->group(function () {
