@@ -41,6 +41,17 @@ class User extends Authenticatable
         return $this->belongsToMany(Course::class, 'course_user', 'user_id', 'course_id')->withPivot('role');
     }
 
+    public function scores()
+    {
+        return $this->belongsToMany(
+            Score::class,
+            'user_scores',
+            'user_id',
+            'score_id'
+        )->withPivot('score_point');
+    }
+
+
     public function userScores() : HasMany
     {
         return $this->hasMany(UserScore::class);
