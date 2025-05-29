@@ -29,6 +29,10 @@
                            :current="request()->routeIs('score.index', $course)" wire:navigate>
             {{ __('Course Score') }}
         </flux:navlist.item>
+        <flux:navlist.item icon="users" :href="route('member.index', $course)"
+                           :current="request()->routeIs('member.index', $course)" wire:navigate>
+            {{ __('Member') }}
+        </flux:navlist.item>
     </flux:navbar>
 
     <flux:spacer/>
