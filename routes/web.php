@@ -30,6 +30,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Volt::route('courses/{course}/member', 'members.index')->name('member.index');
     Volt::route('courses/{course}/member/add', 'members.add')->name('member.add');
     Volt::route('courses/{course}/member/{member}', 'members.show')->name('member.show');
+    Volt::route('courses/{course}/member/{member}/update', 'members.update')->name('member.update');
 });
 
 Route::middleware(['auth'])->group(function () {
