@@ -4,6 +4,7 @@ use App\Http\Controllers\AssignmentSearchController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\UserSearchController;
 use App\Http\Middleware\AdminMiddleware;
+use App\Models\Course;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -14,12 +15,9 @@ Route::get('/', function () {
     return redirect()->route('courses.index');
 })->name('home');
 
-Route::middleware(['auth', 'verified', AdminMiddleware::class])->group(function () {
-    Volt::route('courses/create', 'courses.create')->name('courses.create');
-});
-
 Route::middleware(['auth', 'verified'])->group(function () {
     Volt::route('courses', 'courses.index')->name('courses.index');
+    Volt::route('courses/create', 'courses.create')->can('create', Course::class)->name('courses.create');
     Volt::route('courses/{course}', 'courses.show')->name('courses.show');
     Volt::route('courses/{course}/assignment', 'assignments.index')->name('assignment.index');
     Volt::route('courses/{course}/assignment/create', 'assignments.create')->name('assignment.create');
