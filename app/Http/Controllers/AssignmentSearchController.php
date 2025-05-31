@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Assignment;
 use App\Models\Course;
-use App\Models\User;
 use Illuminate\Http\Request;
 
 class AssignmentSearchController extends Controller
@@ -14,37 +12,24 @@ class AssignmentSearchController extends Controller
         $search = $request->query('search');
         $course_id = $request->query('course_id');
         $course = Course::find($course_id);
-        if(empty($search) || $search == '') {
+        if (empty($search) || $search == '') {
             return $course->assignments;
         }
+
         return $course->assignments()->whereLike('title', $search)->get();
     }
-    public function index()
-    {
 
-    }
+    public function index() {}
 
-    public function create()
-    {
-    }
+    public function create() {}
 
-    public function store(Request $request)
-    {
-    }
+    public function store(Request $request) {}
 
-    public function show($id)
-    {
-    }
+    public function show($id) {}
 
-    public function edit($id)
-    {
-    }
+    public function edit($id) {}
 
-    public function update(Request $request, $id)
-    {
-    }
+    public function update(Request $request, $id) {}
 
-    public function destroy($id)
-    {
-    }
+    public function destroy($id) {}
 }

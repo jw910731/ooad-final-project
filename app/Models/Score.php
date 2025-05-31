@@ -20,17 +20,17 @@ class Score extends Model
         'max_point',
     ];
 
-    public function course() : BelongsTo
+    public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
     }
 
-    public function userScores() : HasMany
+    public function userScores(): HasMany
     {
         return $this->hasMany(UserScore::class);
     }
 
-    public function assignment() : HasOne
+    public function assignment(): HasOne
     {
         return $this->hasOne(Assignment::class);
     }

@@ -18,12 +18,12 @@ class Assignment extends Model
         'description',
     ];
 
-    public function course() : BelongsTo
+    public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
     }
 
-    public function score() : BelongsTo
+    public function score(): BelongsTo
     {
         return $this->belongsTo(Score::class);
     }

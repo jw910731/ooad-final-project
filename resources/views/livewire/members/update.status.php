@@ -1,15 +1,12 @@
 <?php
 
-use App\Models\Assignment;
 use App\Models\Course;
-use App\Models\User;
-use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
-use Illuminate\View\View;
 
-new class extends Component {
-    //public Course $course;
+new class extends Component
+{
+    // public Course $course;
     #[Validate('required|string')]
     public string $title = '';
 
@@ -20,8 +17,10 @@ new class extends Component {
     public ?int $user_id = null;
 
     public Course $course;
-        public function mount(Course $course) {
-          $this->course = $course;
+
+    public function mount(Course $course)
+    {
+        $this->course = $course;
     }
 
     public function Member_change(): void
@@ -30,17 +29,18 @@ new class extends Component {
             'course_id' => $this->course->id,
             'order' => 1,
             'title' => $this->title,
-            'description' => $this->description
+            'description' => $this->description,
         ]);
         $this->redirectRoute('member.index', $this->course);
     }
+
     public function Delete_member(): void
     {
         $this->course->assignments()->create([
             'course_id' => $this->course->id,
             'order' => 1,
             'title' => $this->title,
-            'description' => $this->description
+            'description' => $this->description,
         ]);
         $this->redirectRoute('member.index', $this->course);
     }

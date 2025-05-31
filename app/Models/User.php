@@ -36,7 +36,7 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    public function courses() : BelongsToMany
+    public function courses(): BelongsToMany
     {
         return $this->belongsToMany(Course::class, 'course_user', 'user_id', 'course_id')->withPivot('role');
     }
@@ -51,8 +51,7 @@ class User extends Authenticatable
         )->withPivot('score_point');
     }
 
-
-    public function userScores() : HasMany
+    public function userScores(): HasMany
     {
         return $this->hasMany(UserScore::class);
     }

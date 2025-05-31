@@ -20,8 +20,8 @@ class CourseTest extends TestCase
         $this->actingAs($user);
         $response = Volt::test('courses.create')
             ->set('user_id', $user->id)
-            ->set('title', "test")
-            ->set('description', "test")
+            ->set('title', 'test')
+            ->set('description', 'test')
             ->call('create');
         $response->assertHasNoErrors();
         $response->assertRedirect(route('courses.index'));
