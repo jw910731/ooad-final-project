@@ -19,10 +19,9 @@ mount(function (Course $course) {
 
 ?>
     <flux:container>
-        @if(($userRole = auth()->user()->courses()->find($course->id)->pivot->role) == 'teacher'
-                || $userRole == 'teaching_assistant')
+        @can('update', $course)
             <flux:button :href="route('score.create',[$course->id])">Add</flux:button>
-        @endif
+        @endcan
         @foreach($course->scores()->get() as $score)
             <a href="{{route('score.show', [$course, $score])}}">
                 <x-card class="flex-auto flex m-6">

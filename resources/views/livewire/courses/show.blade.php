@@ -19,9 +19,9 @@ mount(function (Course $course) {
 ?>
 
 <flux:container>
-    @if(auth()->user()->courses()->find($course->id)->pivot->role == 'teacher')
+    @can('update', $course)
         <flux:button :href="route('courses.add_info', $course)">Add</flux:button>
-    @endif
+    @endcan
     <flux:heading class="flex items-center gap-2">{{ $this->course->title }}</flux:heading>
     <flux:text class="mt-2">{{ $this->course->description }}</flux:text>
     @foreach($course->infos()->orderBy('order')->get() as $info)

@@ -22,9 +22,9 @@ mount(function (Course $course, User $member) {
 
 <flux:container>
     <flux:heading class="flex items-center gap-2">{{ $this->member->name }}</flux:heading>
-    @if(auth()->user()->system_admin)
+    @can('update', $course)
         <flux:button :href="route('assignment.create',$course)">
         Change member role</flux:button>
-    @endif
+    @endcan
     <flux:text class="mt-2">{{ $this->member->description }}</flux:text>
 </flux:container>

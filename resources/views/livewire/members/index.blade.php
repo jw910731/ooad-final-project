@@ -20,9 +20,9 @@ mount(function (Course $course) {
 ?>
 
 <section class="w-full">
-    @if(auth()->user()->courses()->find($course->id)->pivot->role == 'teacher')
+    @can('update', $course)
         <flux:button :href="route('member.add',[$course->id])">Add</flux:button>
-    @endif
+    @endcan
     <flux:container class="flex">
         @foreach( $course->users as $member)
             <a href="{{route('member.show', [$course, $member])}}">
