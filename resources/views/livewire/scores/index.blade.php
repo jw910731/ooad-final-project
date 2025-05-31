@@ -19,7 +19,8 @@ mount(function (Course $course) {
 
 ?>
     <flux:container>
-        @if(auth()->user()->system_admin)
+        @if(($userRole = auth()->user()->courses()->find($course->id)->pivot->role) == 'teacher'
+                || $userRole == 'teaching_assistant')
             <flux:button :href="route('score.create',[$course->id])">Add</flux:button>
         @endif
         @foreach($course->scores()->get() as $score)

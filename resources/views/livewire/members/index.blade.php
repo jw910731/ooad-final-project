@@ -13,7 +13,6 @@ booted(function () {
 });
 
 mount(function (Course $course) {
-    //$this->member = $member;
     $this->course = $course;
     //dd();
 });
@@ -21,12 +20,23 @@ mount(function (Course $course) {
 ?>
 
 <section class="w-full">
+    @if(auth()->user()->courses()->find($course->id)->pivot->role == 'teacher')
+        <flux:button :href="route('member.add',[$course->id])">Add</flux:button>
+    @endif
     <flux:container class="flex">
-        @foreach( $course->users()->get() as $member)
+        @foreach( $course->users as $member)
             <a href="{{route('member.show', [$course, $member])}}">
                 <x-card class="flex-auto flex m-6">
                     <flux:heading class="flex items-center gap-2">{{ $member->name }}</flux:heading>
-{{--                    <flux:text class="mt-2">{{ }}</flux:text>--}}
+                    @if(( $memberRole = $member->pivot->role) == 'teacher')
+                        <flux:text class="mt-2">Teacher</flux:text>
+                    @elseif( $memberRole == 'teaching_assistant')
+                        <flux:text class="mt-2">Teaching Assistant</flux:text>
+                    @elseif( $memberRole == 'student')
+                        <flux:text class="mt-2">Student</flux:text>
+                    @else
+                        <flux:text class="mt-2">Helper</flux:text>
+                    @endif
                 </x-card>
             </a>
         @endforeach

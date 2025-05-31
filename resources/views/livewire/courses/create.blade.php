@@ -7,20 +7,21 @@ use Livewire\Volt\Component;
 
 new class extends Component {
     #[Validate('required|string')]
-    public string $title = '';
+    public $title = '';
 
     #[Validate('required|string')]
-    public string $description = '';
+    public $description = '';
 
-    #[Validate('required')]
-    public ?int $user_id = null;
+    #[Validate('required|exists:users,id')]
+    public $user_id = null;
 
     public function create(): void
     {
-        $user = User::find($this->user_id);
+        $validated = $this->validate();
+        $user = User::find($validated['user_id']);
         $user->courses()->create([
-            'title' => $this->title,
-            'description' => $this->description
+            'title' => $validated['title'],
+            'description' => $validated['description']
         ], ['role' => 'teacher']);
         $this->redirectRoute('courses.index');
     }
