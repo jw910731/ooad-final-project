@@ -41,7 +41,6 @@ new class extends Component
 
         $userId = $this->member;
 
-        // 中間テーブルを更新
         $this->course->users()->updateExistingPivot($userId, [
             'role' => $validated['role'],
         ]);

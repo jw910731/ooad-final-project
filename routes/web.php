@@ -21,6 +21,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Volt::route('courses/{course}/assignment', 'assignments.index')->name('assignment.index');
     Volt::route('courses/{course}/assignment/create', 'assignments.create')->name('assignment.create');
     Volt::route('courses/{course}/assignment/{assignment}', 'assignments.show')->name('assignment.show');
+    Volt::route('courses/{course}/assignment/{assignment}/edit', 'assignments.edit')->name('assignment.edit');
     Volt::route('courses/{course}/score', 'scores.index')->name('score.index');
     Volt::route('courses/{course}/score/create', 'scores.create')->name('score.create');
     Volt::route('courses/{course}/score/{score}', 'scores.show')->name('score.show');
