@@ -25,7 +25,7 @@ mount(function (Course $course) {
     @endif
     <flux:container class="flex">
         @foreach( $course->users as $member)
-            <a href="{/*{route('courses.show', $course)}*/}">
+            <a href="{{route('member.show', [$course, $member])}}">
                 <x-card class="flex-auto flex m-6">
                     <flux:heading class="flex items-center gap-2">{{ $member->name }}</flux:heading>
                     @if(( $memberRole = $member->pivot->role) == 'teacher')
