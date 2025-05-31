@@ -30,7 +30,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('api/assignment_search/search', [AssignmentSearchController::class, 'search'])->name('assignmentSearch.search');
     Volt::route('courses/{course}/member', 'members.index')->name('member.index');
     Volt::route('courses/{course}/member/add', 'members.add')->name('member.add');
-    Volt::route('courses/{course}/member/{member}', 'members.add')->name('member.add');
+    Volt::route('courses/{course}/member/{member}', 'members.show')->name('member.show');
 });
 
 Route::middleware(['auth'])->group(function () {

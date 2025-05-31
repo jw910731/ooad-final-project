@@ -16,7 +16,6 @@ booted(function () {
 mount(function (Course $course, User $member) {
     $this->course = $course;
     $this->member = $member;
-    $name = $member->name;
 });
 
 ?>
