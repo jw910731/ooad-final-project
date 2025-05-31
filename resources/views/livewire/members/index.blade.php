@@ -28,7 +28,15 @@ mount(function (Course $course) {
             <a href="{/*{route('courses.show', $course)}*/}">
                 <x-card class="flex-auto flex m-6">
                     <flux:heading class="flex items-center gap-2">{{ $member->name }}</flux:heading>
-                    <flux:text class="mt-2">{{ $member->pivot->role}}</flux:text>
+                    @if(( $memberRole = $member->pivot->role) == 'teacher')
+                        <flux:text class="mt-2">{{'Teacher'}}</flux:text>
+                    @elseif( $memberRole == 'teaching_assistant')
+                        <flux:text class="mt-2">{{'Teaching Assistant'}}</flux:text>
+                    @elseif( $memberRole == 'student')
+                        <flux:text class="mt-2">{{'Student'}}</flux:text>
+                    @else
+                        <flux:text class="mt-2">{{'Helper'}}</flux:text>
+                    @endif
                 </x-card>
             </a>
         @endforeach
