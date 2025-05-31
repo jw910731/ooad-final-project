@@ -20,7 +20,6 @@ class UserSearchController extends Controller
             });
         }
         if(empty($search) || $search == '') {
-            //return User::all();
             return $users->get();
         }
         return $users->whereLike('name', $search)->get();

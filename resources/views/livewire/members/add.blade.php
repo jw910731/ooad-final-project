@@ -34,7 +34,6 @@ class extends Component {
     public function addMember(): void
     {
         $validated = $this->validate();
-        //dd($this->role);
         $course = Course::find($this->course->id);
         $course->users()->attach(
             array_map(function($value) use (&$validated) {
