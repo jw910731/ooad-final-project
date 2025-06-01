@@ -22,9 +22,9 @@ mount(function (Course $course) {
 ?>
 
 <section class="w-full">
-    @if(auth()->user()->system_admin)
+    @can('update', $course)
         <flux:button :href="route('assignment.create',$course)">Add</flux:button>
-    @endif
+    @endcan
     <flux:container class="flex">
         @foreach($assignments as $assignment)
             <a href="{{route('assignment.show', [$course, $assignment])}}">

@@ -9,11 +9,13 @@ layout('components.layouts.course');
 
 state(['course', 'member']);
 
+booted(function () {
+    $this->attributes->add(new Layout('components.layouts.course', ['course' => $this->course]));
+});
+
 mount(function (Course $course, User $member) {
     $this->course = $course;
     $this->member = $member;
-
-    $this->attributes->add(new Layout('components.layouts.course', ['course' => $this->course]));
 });
 
 $Delete_member = function () {
@@ -30,7 +32,7 @@ $Delete_member = function () {
 
 <flux:container>
     <flux:heading class="flex items-center gap-2">{{ $this->member->name }}</flux:heading>
-    @if(auth()->user()->system_admin)
+    @can('update', $course)
         <flux:button :href="route('member.update',[$course, $member])">
         Change member role</flux:button>
         <flux:button
@@ -40,8 +42,6 @@ $Delete_member = function () {
         >
         Remove Member
         </flux:button>
-        
-    @endif
-
+    @endcan
     <flux:text class="mt-2">{{ $this->member->description }}</flux:text>
 </flux:container>

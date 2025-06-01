@@ -6,9 +6,9 @@ state(['courses' => fn () => auth()->user()->courses()->get()]);
 ?>
 
 <section class="w-full">
-    @if(auth()->user()->system_admin)
+    @can('create', App\Models\Course::class)
         <flux:button :href="route('courses.create')">Add</flux:button>
-    @endif
+    @endcan
     <flux:container class="flex">
         @foreach($courses as $course)
             <a href="{{route('courses.show', $course)}}">
