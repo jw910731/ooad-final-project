@@ -14,6 +14,7 @@ booted(function () {
 
 mount(function (Course $course) {
     $this->course = $course;
+
     //dd();
 });
 
