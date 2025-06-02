@@ -30,6 +30,9 @@ mount(function (Course $course, Score $score) {
             </x-card>
         </a>
     @endif
+    @can('update', $course)
+        <flux:button :href="route('score.adduser',[$course, $score])">Add points to students</flux:button>
+    @endcan
     <flux:heading class="flex items-center gap-2">{{ $this->score->title }}</flux:heading>
     <flux:text class="mt-2">{{ $this->score->description }}</flux:text>
     <flux:text class="mt-2">Max Point: {{ $this->score->max_point }}</flux:text>
