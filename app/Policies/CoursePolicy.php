@@ -27,6 +27,6 @@ class CoursePolicy
 
     public function delete(User $user, Course $course): bool
     {
-        return $this->view($user, $course) && $user->courses()->find($course)->pivot->role == "teacher";
+        return $this->view($user, $course) && ($user->courses()->find($course)->pivot->role == "teacher"|| $user->system_admin);
     }
 }
