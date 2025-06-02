@@ -39,16 +39,20 @@ new class extends Component {
                 return ['role' => 'teacher'];
             }, array_flip($validated['userTeacher_id']))
         );
-        $course->users()->attach(
-            array_map(function($value) use (&$validated) {
-                return ['role' => 'teaching_assistant'];
-            }, array_flip($validated['userTA_id']))
-        );
-        $course->users()->attach(
-            array_map(function($value) use (&$validated) {
-                return ['role' => 'student'];
-            }, array_flip($validated['userStudent_id']))
-        );
+        if( $this->userTA_id != []){
+            $course->users()->attach(
+                array_map(function ($value) use (&$validated) {
+                    return ['role' => 'teaching_assistant'];
+                }, array_flip($validated['userTA_id']))
+            );
+        }
+        if($this->userStudent_id != []){
+            $course->users()->attach(
+                array_map(function ($value) use (&$validated) {
+                    return ['role' => 'student'];
+                }, array_flip($validated['userStudent_id']))
+            );
+        }
         $this->redirectRoute('courses.index');
     }
 }
