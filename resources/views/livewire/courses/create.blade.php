@@ -18,7 +18,13 @@ new class extends Component {
     ])]
     public $userTeacher_id = [];
 
+    #[Validate([
+        'userTA_id.*' => 'exists:users,id',
+    ])]
     public $userTA_id = [];
+    #[Validate([
+        'userStudent_id.*' => 'exists:users,id',
+    ])]
     public $userStudent_id = [];
 
     public function create(): void
@@ -36,12 +42,12 @@ new class extends Component {
         $course->users()->attach(
             array_map(function($value) use (&$validated) {
                 return ['role' => 'teaching_assistant'];
-            }, array_flip($this->userTA_id))
+            }, array_flip($validated['userTA_id']))
         );
         $course->users()->attach(
             array_map(function($value) use (&$validated) {
                 return ['role' => 'student'];
-            }, array_flip($this->userStudent_id))
+            }, array_flip($validated['userStudent_id']))
         );
         $this->redirectRoute('courses.index');
     }

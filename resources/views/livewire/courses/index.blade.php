@@ -9,12 +9,9 @@ use function Livewire\Volt\{state};
 
 state(['courses' => fn() => auth()->user()->courses()->get()]);
 
-//courseFocused = 1;
-
 $delete_course = function ( Course $target): void
 {
-    //$target->users()->score()->delete();
-    //dd($target);
+    //Todo: remove relative assignment and scores;
     $target->users()->detach();
     $target->delete();
 }
@@ -41,10 +38,4 @@ $delete_course = function ( Course $target): void
             </a>
         @endforeach
     </flux:container>
-{{--    @if($courseFocused)--}}
-{{--    <x-card class="flex m-6 flex m-6" wire:mouseover="$refresh()">--}}
-{{--        <flux:heading class="flex items-center gap-2">{{ $courseFocused->title }}</flux:heading>--}}
-{{--        <flux:text class="mt-2">{{ $courseFocused->description }}</flux:text>--}}
-{{--    </x-card>--}}
-{{--    @endif--}}
 </section>
