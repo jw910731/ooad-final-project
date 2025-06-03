@@ -14,6 +14,7 @@ $delete_course = function ( Course $target): void
     //Todo: remove relative assignment and scores;
     $target->users()->detach();
     $target->delete();
+    $this->redirect('courses.index');
 }
 ?>
 
@@ -29,9 +30,11 @@ $delete_course = function ( Course $target): void
                     <flux:heading class="flex items-center gap-2">{{ $course->title }}</flux:heading>
                     <flux:text class="mt-2">{{ $course->description }}</flux:text>
                     @can('delete', $course)
-                            <x-button negative wire:click="delete_course({{$course}})" href="{{route('courses.index')}}">
-                                {{ __('Delete') }}
-                            </x-button>
+                            <flux:button icon="trash"
+                                         variant="danger"
+                                      wire:click="delete_course({{$course}})"
+                            >Delete
+                            </flux:button>
                     @endcan
                 </x-card>
             </a>
