@@ -56,6 +56,11 @@ class User extends Authenticatable
         return $this->hasMany(UserScore::class);
     }
 
+    public function userAssignment(): HasMany
+    {
+        return $this->hasMany(UserAssignment::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *

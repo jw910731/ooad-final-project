@@ -6,34 +6,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Assignment extends Model
+class UserAssignment extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'course_id',
-        'score_id',
-        'order',
-        'title',
-        'description',
+        'user_id',
+        'assignment_id',
         'file_set_id',
     ];
 
-    public function course(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Course::class);
+        return $this->belongsTo(User::class);
     }
 
-    public function score(): BelongsTo
+    public function assignment(): BelongsTo
     {
-        return $this->belongsTo(Score::class);
-    }
-
-    public function userAssignment(): HasMany
-    {
-        return $this->hasMany(UserAssignment::class);
+        return $this->belongsTo(Assignment::class);
     }
 
     public function files(): BelongsToMany
