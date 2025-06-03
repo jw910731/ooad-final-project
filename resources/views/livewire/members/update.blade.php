@@ -31,8 +31,8 @@ new class extends Component
 
     public $role;
 
-    
-    public function Member_change(): void
+
+    public function memberChange(): void
     {
         $validated = $this->validate([
             'role' => 'required|string|in:teacher,teaching_assistant,student,helper',
@@ -56,7 +56,7 @@ new class extends Component
             <flux:separator variant="subtle"/>
         </div>
         <x-card class="p-6">
-            <form wire:submit="Member_change">
+            <form wire:submit="memberChange">
             <x-select
                 label="Change Role"
                 placeholder="Select new role"

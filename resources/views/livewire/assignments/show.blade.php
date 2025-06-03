@@ -21,7 +21,7 @@ mount(function (Course $course, Assignment $assignment) {
     $this->attributes->add(new Layout('components.layouts.course', ['course' => $this->course]));
 });
 
-$Delete_assignment = function () {
+$deleteAssignment = function () {
     $assignment = Assignment::findOrFail($this->assignment->id);
 
     if ($assignment->course_id === $this->course->id) {
@@ -40,12 +40,12 @@ $Delete_assignment = function () {
     <flux:button :href="route('assignment.edit',[$course, $assignment])">
         Edit assignment</flux:button>
     <flux:button
-        wire:click.prevent="Delete_assignment"
+        wire:click.prevent="deleteAssignment"
         variant="danger"
         onclick="if (!confirm('Are you sure you want to remove this assignment from the course?')) return false;"
     >
     Remove assignment
     </flux:button>
-        
+
     @endif
 </flux:container>

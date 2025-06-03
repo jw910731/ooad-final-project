@@ -63,13 +63,13 @@ class extends Component {
         if (!empty($duplicateUsers)) {
             $userNames = \App\Models\User::whereIn('id', $duplicateUsers)->pluck('name')->toArray();
 
-            // エラーメッセージ生成
+            // generate error message
             $this->addError('user_scores', 'Scores for the following users already exist: ' . implode(', ', $userNames));
 
             return;
         }
 
-        // 問題なければリダイレクト
+        // redirect if there is no problem
         $this->redirectRoute('score.index', [$this->course]);
     }
 }
@@ -87,8 +87,8 @@ class extends Component {
                     label="User of this course"
                     placeholder="Select users to add scores"
                     :async-data="[
-                        'api' => route('userSearchStudent.search'),
-                        'params' => ['excludeStudent' => $course->id],
+                        'api' => route('userSearch.search'),
+                        'params' => ['includeCourse' => $course->id, 'requireRole' => 'student'],
                         'credentials' => 'include',
                     ]"
                     option-label="name"
@@ -108,7 +108,7 @@ class extends Component {
                     />
                 @endforeach
 
-                {{-- エラー表示 --}}
+                {{-- show errors --}}
                 @error('user_scores')
                     <div class="text-red-600 mt-2">{{ $message }}</div>
                 @enderror
