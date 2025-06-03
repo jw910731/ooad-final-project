@@ -12,7 +12,7 @@ class CoursePolicy
 
     public function view(User $user, Course $course): bool
     {
-        return $user->courses()->where('course_id', $course->id)->exists();
+        return $user->courses()->where('course_id', $course->id)->exists() || $user->system_admin;
     }
 
     public function create(User $user): bool
@@ -22,11 +22,17 @@ class CoursePolicy
 
     public function update(User $user, Course $course): bool
     {
-        return $this->view($user, $course) && (($role = $user->courses()->find($course)->pivot->role) == "teacher" || $role == "teaching_assistant");
+        return $this->view($user, $course) && (($role = $user->courses()->find($course)->pivot->role) == 'teacher'
+                                                || $role == 'teaching_assistant');
     }
 
     public function delete(User $user, Course $course): bool
     {
-        return $this->view($user, $course) && $user->courses()->find($course)->pivot->role == "teacher";
+        return $this->view($user, $course) && ($user->courses()->find($course)->pivot->role == 'teacher');
+    }
+
+    public function updateMember(User $user, Course $course): bool
+    {
+        return $this->view($user, $course) && (($role = $user->courses()->find($course)->pivot->role) == 'teacher');
     }
 }

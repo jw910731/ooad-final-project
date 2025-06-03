@@ -32,7 +32,7 @@ $Delete_member = function () {
 
 <flux:container>
     <flux:heading class="flex items-center gap-2">{{ $this->member->name }}</flux:heading>
-    @can('update', $course)
+    @can('updateMember', $course)
         <flux:button :href="route('member.update',[$course, $member])">
         Change member role</flux:button>
         <flux:button

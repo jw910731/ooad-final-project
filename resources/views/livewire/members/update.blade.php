@@ -31,7 +31,7 @@ new class extends Component
 
     public $role;
 
-    
+
     public function Member_change(): void
     {
         $validated = $this->validate([
@@ -52,7 +52,7 @@ new class extends Component
 <flux:container>
     <div class="flex w-full flex-col gap-2">
         <div class="relative mb-6 w-full">
-            <flux:heading size="xl" level="1">{{ __('Create Assignments') }}</flux:heading>
+            <flux:heading size="xl" level="1">{{ __('Set roles') }}</flux:heading>
             <flux:separator variant="subtle"/>
         </div>
         <x-card class="p-6">
