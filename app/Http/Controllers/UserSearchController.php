@@ -36,40 +36,5 @@ class UserSearchController extends Controller
         }
 
         return $users->whereLike('name', $search)->get();
-    }/*
-    public function searchTeacher(Request $request)
-    {
-        $search = $request->query('search');
-        $excludeStudent = $request->query('excludeStudent');
-
-        $users = User::toBase();
-        if(!is_null($excludeStudent)) {
-            $users = User::whereHas('courses', function ($q) use ($excludeStudent) {
-                $q->where('course_id', $excludeStudent)->where('role', 'teacher');
-            });
-        }
-
-        if((empty($search))){
-            return $users->get();
-        }
-        return $users->whereLike('name', $search)->get();
     }
-
-    public function searchStudent(Request $request)
-    {
-        $search = $request->query('search');
-        $includeCourse = $request->query('includeCourse');
-
-        $users = User::toBase();
-        if(!is_null($includeCourse)) {
-            $users = User::whereHas('courses', function ($q) use ($includeCourse) {
-                $q->where('course_id', $includeCourse)->where('role', 'student');
-            });
-        }
-
-        if((empty($search))){
-            return $users->get();
-        }
-        return $users->whereLike('name', $search)->get();
-    }*/
 }
