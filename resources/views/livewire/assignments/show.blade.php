@@ -26,7 +26,6 @@ class extends Component {
     {
         $this->course = $course;
         $this->assignment = $assignment;
-        dd($this->assignment->userAssignment()->where('user_id', auth()->user()->id)->get());
     }
 
     public function rendering(View $view): void
