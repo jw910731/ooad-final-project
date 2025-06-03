@@ -93,11 +93,11 @@
     </a>
 
     <flux:navlist variant="outline">
-        <flux:navlist.group :heading="__('Platform')">
-            <flux:navlist.item icon="layout-grid" :href="route('courses.index')"
-                               :current="request()->routeIs('courses.index')" wire:navigate>
+        <flux:navlist.group>
+            <flux:navbar.item icon="layout-grid" :href="route('courses.index')"
+                              :current="request()->routeIs('courses.index')" wire:navigate>
                 {{ __('Courses') }}
-            </flux:navlist.item>
+            </flux:navbar.item>
             <flux:navlist.item icon="book-open" :href="route('courses.show', $course)"
                                :current="request()->routeIs('courses.show', $course)" wire:navigate>
                 {{ __('Course Info') }}
@@ -109,6 +109,10 @@
             <flux:navlist.item icon="star" :href="route('score.index', $course)"
                                :current="request()->routeIs('score.index', $course)" wire:navigate>
                 {{ __('Course Score') }}
+            </flux:navlist.item>
+            <flux:navlist.item icon="users" :href="route('member.index', $course)"
+                               :current="request()->routeIs('member.index', $course)" wire:navigate>
+                {{ __('Member') }}
             </flux:navlist.item>
         </flux:navlist.group>
     </flux:navlist>
