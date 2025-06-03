@@ -1,12 +1,15 @@
 <?php
 
-use App\Models\Course;
 use App\Models\Assignment;
+use App\Models\Course;
 use App\Models\User;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
+use Illuminate\View\View;
 
-new class extends Component {
+new #[Layout('components.layouts.course')]
+class extends Component {
     #[Validate('required|string')]
     public string $title = '';
 
@@ -17,11 +20,18 @@ new class extends Component {
     public ?int $user_id = null;
 
     public Course $course;
-        public function mount(Course $course) {
-          $this->course = $course;
+
+    public function mount(Course $course): void
+    {
+        $this->course = $course;
     }
 
-    public function Assignment_create(): void
+    public function rendering(View $view): void
+    {
+        $view->layoutData(['course' => $this->course]);
+    }
+
+    public function assignmentCreate(): void
     {
         $this->course->assignments()->create([
             'course_id' => $this->course->id,
@@ -41,7 +51,7 @@ new class extends Component {
             <flux:separator variant="subtle"/>
         </div>
         <x-card class="p-6">
-            <form wire:submit="Assignment_create">
+            <form wire:submit="assignmentCreate">
                 <flux:input class="mb-6" wire:model="title" :label="__('Assignment Title')" required
                             autofocus/>
                 <flux:textarea class="mb-6" wire:model="description" :label="__('Assignment Description')"/>
@@ -49,8 +59,8 @@ new class extends Component {
                     label="Teacher of the Assignment"
                     placeholder="Select user as teacher"
                     :async-data="[
-                        'api' => route('userSearchTeacher.search'),
-                        'params' => ['excludeStudent' => $course->id],
+                        'api' => route('userSearch.search'),
+                        'params' => ['includeCourse' => $course->id, 'requireRole' => 'teacher'],
                         'credentials' => 'include',
                     ]"
                     option-label="name"

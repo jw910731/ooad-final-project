@@ -9,8 +9,6 @@ use Livewire\Volt\Component;
 use Illuminate\View\View;
 use Livewire\WithFileUploads;
 
-//use function Livewire\Volt\{state, booted, mount, layout};
-
 
 new #[Layout('components.layouts.course')]
 class extends Component {
@@ -28,7 +26,6 @@ class extends Component {
     {
         $this->course = $course;
         $this->assignment = $assignment;
-        dd($this->assignment->userAssignment()->where('user_id', auth()->user()->id)->get());
     }
 
     public function rendering(View $view): void
@@ -36,7 +33,7 @@ class extends Component {
         $view->layoutData(['course' => $this->course, 'assignment' => $this->assignment]);
     }
 
-    public function Delete_assignment(): void
+    public function deleteAssignment(): void
     {
         $assignment = Assignment::findOrFail($this->assignment->id);
 
@@ -47,7 +44,7 @@ class extends Component {
         $this->redirectRoute('assignment.index', [$this->course]);
     }
 
-    public function save_hand_on(): void
+    public function saveSubmissions(): void
     {
         $validated = $this->validate();
         $fileset_uuid = uuid_create();
@@ -86,7 +83,7 @@ class extends Component {
     @endcan
     @can('delete', $this->assignment)
         <flux:button
-            wire:click.prevent="Delete_assignment"
+            wire:click.prevent="deleteAssignment"
             variant="danger"
             onclick="if (!confirm('Are you sure you want to remove this assignment from the course?')) return false;"
         >
@@ -111,7 +108,7 @@ class extends Component {
                 </a>
             @endforeach
         </b>
-        <form wire:submit="save_hand_on">
+        <form wire:submit="saveSubmissions">
             <flux:input type="file" wire:model="attachments" :label="__('Submits')" multiple/>
             @error('attachments.*') <span class="error">{{ $message }}</span> @enderror
             <div class="mb-6">

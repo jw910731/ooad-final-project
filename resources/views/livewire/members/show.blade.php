@@ -9,13 +9,11 @@ layout('components.layouts.course');
 
 state(['course', 'member']);
 
-booted(function () {
-    $this->attributes->add(new Layout('components.layouts.course', ['course' => $this->course]));
-});
-
 mount(function (Course $course, User $member) {
     $this->course = $course;
     $this->member = $member;
+
+    $this->attributes->add(new Layout('components.layouts.course', ['course' => $this->course]));
 });
 
 $Delete_member = function () {
