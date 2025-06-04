@@ -28,6 +28,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Volt::route('courses/{course}/score/create', 'scores.create')->name('score.create');
     Volt::route('courses/{course}/score/{score}', 'scores.show')->name('score.show');
     Volt::route('courses/{course}/score/{score}/adduser', 'scores.adduser')->name('score.adduser');
+    Volt::route('courses/{course}/score/{score}/edit', 'scores.edit')->name('score.edit');
+    Volt::route('courses/{course}/score/{score}/edituser/{user}', 'scores.edituser')->name('score.edituser');
     Route::get('api/user_search/search', [UserSearchController::class, 'search'])->name('userSearch.search');
     Route::get('api/assignment_search/search', [AssignmentSearchController::class, 'search'])->name('assignmentSearch.search');
     Volt::route('courses/{course}/member', 'members.index')/*->can('view', 'course')*/->name('member.index');
