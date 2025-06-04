@@ -28,7 +28,7 @@ $delete_course = function ( Course $target): void
                href="{{route('courses.show', $course)}}">
                 <x-card class="flex m-6 flex m-6">
                     <flux:heading class="flex items-center gap-2">{{ $course->title }}</flux:heading>
-                    <flux:text class="mt-2">{{ $course->description }}</flux:text>
+                    <flux:text class="mt-2">{!! nl2br(e($course->description)) !!}</flux:text>
                     @can('delete', $course)
                             <flux:button icon="trash"
                                          variant="danger"

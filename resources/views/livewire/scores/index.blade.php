@@ -26,7 +26,7 @@ mount(function (Course $course) {
             <a href="{{route('score.show', [$course, $score])}}">
                 <x-card class="flex-auto flex m-6">
                     <flux:heading class="flex items-center gap-2">{{ $score->title }}</flux:heading>
-                    <flux:text class="mt-2">{{ $score->description }}</flux:text>
+                    <flux:text class="mt-2">{!! nl2br(e($score->description)) !!}</flux:text>
                 </x-card>
             </a>
         @endforeach

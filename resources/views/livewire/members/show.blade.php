@@ -41,5 +41,5 @@ $Delete_member = function () {
         Remove Member
         </flux:button>
     @endcan
-    <flux:text class="mt-2">{{ $this->member->description }}</flux:text>
+    <flux:text class="mt-2">{!! nl2br(e($this->member->description)) !!}</flux:text>
 </flux:container>

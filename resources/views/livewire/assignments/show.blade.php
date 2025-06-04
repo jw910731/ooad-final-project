@@ -74,7 +74,7 @@ class extends Component {
 <flux:container>
     <x-card >
         <flux:heading class="flex items-center gap-2">{{ $this->assignment->title }}</flux:heading>
-        <flux:text class="mt-2">{{ $this->assignment->description }}</flux:text>
+        <flux:text class="mt-2">{!! nl2br(e($this->assignment->description))  !!}</flux:text>
     </x-card>
     @can('update', $this->assignment)
         <flux:button :href="route('assignment.edit',[$course, $assignment])">
