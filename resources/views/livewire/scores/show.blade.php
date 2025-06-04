@@ -26,7 +26,7 @@ mount(function (Course $course, Score $score) {
         <a href="{{route('assignment.show', [$course->id, $score->assignment->id])}}">
             <x-card class="flex-auto flex m-6">
                 <flux:heading class="flex items-center gap-2">{{ $score->assignment->title }}</flux:heading>
-                <flux:text class="mt-2">{{ $score->assignment->description }}</flux:text>
+                <flux:text class="mt-2">{!! nl2br(e($score->assignment->description))  !!}</flux:text>
             </x-card>
         </a>
     @endif
@@ -34,6 +34,6 @@ mount(function (Course $course, Score $score) {
         <flux:button :href="route('score.adduser',[$course, $score])">Add points to students</flux:button>
     @endcan
     <flux:heading class="flex items-center gap-2">{{ $this->score->title }}</flux:heading>
-    <flux:text class="mt-2">{{ $this->score->description }}</flux:text>
+    <flux:text class="mt-2">{!!  nl2br(e($this->score->description)) !!}</flux:text>
     <flux:text class="mt-2">Max Point: {{ $this->score->max_point }}</flux:text>
 </flux:container>
