@@ -31,8 +31,9 @@ class AssignmentPolicy
         return $this->view($user, $assignment) && ($user->can('update', Course::find($assignment->course_id)));
     }
 
-    public function hand_on(User $user, Assignment $assignment): bool
+    public function submit(User $user, Assignment $assignment): bool
     {
-        return $this->view($user, $assignment) && ($user->courses()->find($assignment->course_id)->pivot->role == 'student');
+        return $this->view($user, $assignment) && ( is_null($assignment->deadline)||now()->isBefore( $assignment->deadline))
+                && ($user->courses()->find($assignment->course_id)->pivot->role == 'student');
     }
 }
