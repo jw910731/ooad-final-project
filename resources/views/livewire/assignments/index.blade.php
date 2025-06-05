@@ -48,26 +48,36 @@ class extends Component {
 ?>
 
 <flux:container class="w-full">
-    @foreach($course->assignments as $assignment)
-        <a href="{{route('assignment.show', [$course, $assignment])}}">
-            <x-card class="flex-auto">
-                <div class="flex mx-4">
-                    <div class="flex-1">
-                        <flux:heading class="flex-1 mt-2 items-center gap-2">{{$assignment->title}}</flux:heading>
-                        <flux:text class="flex my-2">{!! nl2br(e($assignment->description)) !!}</flux:text>
-                    </div>
-                    @can('update', $this->course)
-                        <flux:button variant="danger" class="flex mr-2"
-                                     wire:confirm="Are you sure you want to remove this assignment from this course?"
-                                     wire:click.prevent="deleteAssignment({{$assignment}})">
-                            <x-icon name="trash"/>
-                        </flux:button>
-                    @endcan
-                </div>
+    <x-card>
+        <flux:heading class="flex my-2">Assignments</flux:heading>
+        @if( is_null($course->assignments()->first()))
+            <x-card>
+                <flux:text class="flex ml-6">There is no assignments now</flux:text>
             </x-card>
-        </a>
-    @endforeach
-    @can('update', $course)
-        <flux:button :href="route('assignment.create',$course)">Add</flux:button>
-    @endcan
+        @endif
+        @foreach($course->assignments as $assignment)
+            <a href="{{route('assignment.show', [$course, $assignment])}}">
+                <x-card class="flex-auto">
+                    <div class="flex mx-4">
+                        <div class="flex-1">
+                            <flux:heading class="flex-1 mt-2 items-center gap-2">{{$assignment->title}}</flux:heading>
+                            <flux:text class="flex my-2">{!! nl2br(e($assignment->description)) !!}</flux:text>
+                        </div>
+                        @can('update', $this->course)
+                            <flux:button variant="danger" class="flex mr-2"
+                                         wire:confirm="Are you sure you want to remove this assignment from this course?"
+                                         wire:click.prevent="deleteAssignment({{$assignment}})">
+                                <x-icon name="trash"/>
+                            </flux:button>
+                        @endcan
+                    </div>
+                </x-card>
+            </a>
+        @endforeach
+        @can('update', $course)
+            <flux:button :href="route('assignment.create',$course)" class="mt-2">
+                Add
+            </flux:button>
+        @endcan
+    </x-card>
 </flux:container>
