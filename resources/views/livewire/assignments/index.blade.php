@@ -34,14 +34,12 @@ class extends Component {
             $score->userScores()->delete();
             $score->delete();
         }
-        $target->userAssignment()->('files')->delete();
-        /*
         if(!is_null($userAssignments = $target->userAssignment)){
             foreach ( $userAssignments as $userAssignment){
-                $userAssignment->files->delete();
+                $userAssignment->files()->delete();
                 $userAssignment->delete();
             }
-        }*/
+        }
         $target->files()->delete();
         $target->delete();
     }
