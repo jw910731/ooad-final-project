@@ -4,27 +4,37 @@ use App\Models\Course;
 use App\Models\Score;
 use App\Models\UserScore;
 use Livewire\Attributes\Layout;
-use function Livewire\Volt\{booted, layout, mount, state};
+use Livewire\Volt\Component;
+use Illuminate\View\View;
 
-layout('components.layouts.course');
+new #[Layout('components.layouts.course')]
+class extends Component {
+    public Course $course;
+    public Score $score;
+    public $userScores;
+    public function mount(Course $course, Score $score): void
+    {
+        $this->course = $course;
+        $this->score = $score;
+        $this->userScores = UserScore::with('user')
+            ->where('score_id', $score->id)
+            ->get();
+        //dd($this->userScores);
+    }
 
-state(['course', 'score', 'userScores']);
+    public function rendering(View $view): void
+    {
+        $view->layoutData(['course' => $this->course, 'score' => $this->score]);
+    }
+}
 
-booted(function () {
-    $this->attributes->add(new Layout('components.layouts.course', ['course' => $this->course, 'score' => $this->score]));
-});
-
-mount(function (Course $course, Score $score) {
-    $this->course = $course;
-    $this->score = $score;
-    $this->userScores = UserScore::with('user')
-        ->where('score_id', $score->id)
-        ->get();
-});
 
 ?>
 
 <flux:container>
+    <flux:heading class="flex items-center gap-2">
+        Related Assignment
+    </flux:heading>
     @if( !is_null($score->assignment))
         <a href="{{route('assignment.show', [$course->id, $score->assignment->id])}}">
             <x-card class="flex-auto flex m-6">
@@ -45,18 +55,33 @@ mount(function (Course $course, Score $score) {
 
     <table class="mt-4 w-full">
         <thead>
-            <tr>
-                <th class="text-left">Student Name</th>
-                <th class="text-left">Score</th>
-            </tr>
+        <tr>
+            <th class="text-left">Student Name</th>
+            <th class="text-left">Score</th>
+        </tr>
         </thead>
         <tbody>
-            @foreach ($this->userScores as $userScore)
-                <tr @click="window.location='{{ route('score.edituser', [$course->id, $score->id, $userScore->user->id]) }}'" class="cursor-pointer hover:bg-gray-100">
-                    <td>{{ $userScore->user->name }}</td>
-                    <td>{{ $userScore->score_point }}</td>
-                </tr>
-            @endforeach
+        @foreach($course->users()->where('role', 'student')->get() as $student)
+            <tr @click="window.location='{{ route('score.edituser', [$course->id, $score->id, $student->id]) }}'"
+                class="cursor-pointer hover:bg-gray-100">
+                <td>
+                    <flux:text>
+                        {{ $student->name }}
+                    </flux:text>
+                </td>
+                @if(!is_null($temp = $userScores->where('user_id', $student->id)->first()))
+                    <td>
+                        <flux:text>
+                            {{ $userScores->where('user_id', $student->id)->first()->score_point }}
+                        </flux:text>
+                    </td>
+                @else
+                    <td>
+                        <flux:text>No record</flux:text>
+                    </td>
+                @endif
+            </tr>
+        @endforeach
         </tbody>
     </table>
 

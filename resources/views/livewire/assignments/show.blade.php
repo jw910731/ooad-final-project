@@ -37,16 +37,6 @@ class extends Component {
         $view->layoutData(['course' => $this->course, 'assignment' => $this->assignment]);
     }
 
-    public function deleteAssignment(): void
-    {
-        $assignment = Assignment::findOrFail($this->assignment->id);
-
-        if ($assignment->course_id === $this->course->id) {
-            $assignment->delete();
-        }
-        $this->redirectRoute('assignment.index', [$this->course]);
-    }
-
     public function saveSubmissions(): void
     {
         $validated = $this->validate();
@@ -69,6 +59,7 @@ class extends Component {
                 'path' => $path,
             ]);
         }
+        $this->redirectRoute('assignment.show', [$this->course,$this->assignment]);
     }
     public function deleteSubmission(File $target): void
     {
@@ -79,6 +70,12 @@ class extends Component {
 ?>
 
 <flux:container>
+    <flux:button
+        :href="route('assignment.index',[$course])"
+    >
+        <x-icon name="arrow-left"/>
+        Assignment List
+    </flux:button>
     <x-card>
         <div class="flex">
             <div class="flex-1">
@@ -92,30 +89,21 @@ class extends Component {
                     edit
                 </flux:button>
             @endcan
-            @can('delete', $this->assignment)
-                <flux:button
-                    wire:click="deleteAssignment"
-                    variant="danger"
-                    wire:confirm="Are you sure you want to remove this assignment from the course?"
-                >
-                    <x-icon name="trash"/>
-                </flux:button>
-            @endcan
         </div>
         <flux:heading class="flex mt-2">
             Appendix
         </flux:heading>
-        @if(!is_null($temp = $this->assignment->files->first()))
-            @foreach($temp as $file)
-                <x-card class="flex m-6">
-                    <flux:text class="mt-1">
-                        <x-icon name="document" class="inline w-5 h-5"/>
-                        <a class="inline" href="{{Storage::temporaryUrl($file->path, now()->addMinute(5))}}">
-                            {{$file->name}}
-                        </a>
+        @if(!is_null(($temp = $this->assignment->files)->first()))
+            <x-card  class="flex mt-1 ">
+                @foreach($temp as $file)
+                    <flux:text class="mt-1" >
+                            <a class="inline cursor-pointer hover:bg-gray-200" href="{{Storage::temporaryUrl($file->path, now()->addMinute(5))}}">
+                                <x-icon name="document" class="inline w-5 h-5"/>
+                                {{$file->name}}
+                            </a>
                     </flux:text>
-                </x-card>
-            @endforeach
+                @endforeach
+            </x-card>
         @else
             <flux:text class="flex mt-2 mx-6">
                 There is no appendix of this assignment now
@@ -127,25 +115,26 @@ class extends Component {
     @can('update', $this->assignment)
         @foreach( $this->course->users()->where('role','student')->get() as $user)
             <x-card class="flex m-6">
+                <flux:heading class="flex">{{$user->name}}</flux:heading>
                 @if((!is_null($user->userAssignment()))
                     && !is_null( $tempUserAssignment = $user->userAssignment()->where('assignment_id',$this->assignment->id)->first())
                     && !is_null($tempUserAssignment->files()->first()))
-                    <flux:heading class="flex">{{$user->name}}</flux:heading>
-                    @foreach($tempUserAssignment->files as $file)
-                        <x-card class="flex m-0">
-                            <div class="mr-4 ">
+                        <x-card class="flex m-0 ">
+                            @foreach($tempUserAssignment->files as $file)
                                 <flux:text class="flex-1 mt-2">
-                                    <a href="{{Storage::temporaryUrl($file->path, now()->addMinute(5))}}">
+                                    <a class="cursor-pointer hover:bg-gray-200"
+                                       href="{{Storage::temporaryUrl($file->path, now()->addMinute(5))}}">
                                         {{$file->name}}
                                     </a>
                                 </flux:text>
-                            </div>
+                            @endforeach
                         </x-card>
-                    @endforeach
                 @else
-                    <flux:text class="mt-2 ml-6">
-                        There is no submissions of {{$user->name}}
-                    </flux:text>
+                    <x-card class="flex m-0">
+                        <flux:text class="mt-2">
+                            There is no submissions of {{$user->name}}
+                        </flux:text>
+                    </x-card>
                 @endif
             </x-card>
         @endforeach

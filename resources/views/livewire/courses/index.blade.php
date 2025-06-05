@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\Course;
-use JetBrains\PhpStorm\NoReturn;
+use App\Models\Assignment;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 use Illuminate\View\View;
@@ -11,10 +11,43 @@ state(['courses' => fn() => auth()->user()->courses()->get()]);
 
 $delete_course = function ( Course $target): void
 {
-    //Todo: remove relative assignment and scores;
+    //dd($target);
+    if( is_null($target)){
+        return;
+    }
+
+    $assignments = $target->assignments;
+    $scores = $target->scores;
+    $infos = $target->infos;
+
+    if(!is_null($scores)){
+        $scores->userScores()->delete();
+        $scores->delete();
+    }
+
+    if(!is_null($assignments)){
+        $userAssignments = $assignments->userAssignment;
+        if(!is_null($userAssignments)){
+            foreach ( $userAssignments as $userAssignment){
+                $userAssignment->files->delete();
+                $userAssignment->delete();
+            }
+        }
+        foreach ( $assignments as $assignment){
+            $assignment->files->delete();
+            $assignment->delete();
+        }
+    }
+
+    if(!is_null($infos)){
+        foreach ( $infos as $info){
+            $info->files->delete();
+            $info->delete();
+        }
+    }
+
     $target->users()->detach();
     $target->delete();
-    $this->redirect('courses.index');
 }
 ?>
 
@@ -34,7 +67,7 @@ $delete_course = function ( Course $target): void
                             @can('delete', $course)
                                 <flux:button
                                     variant="danger"
-                                    wire:click="delete_course({{$course}})"
+                                    wire:click.prevent="delete_course({{$course}})"
                                 >
                                     <x-icon name="trash"></x-icon>
                                 </flux:button>

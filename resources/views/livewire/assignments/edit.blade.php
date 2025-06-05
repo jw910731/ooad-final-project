@@ -45,9 +45,7 @@ class extends Component {
 
     public function save(): void
     {
-        //dd($this->userAssignment);
         $validated = $this->validate();
-        $fileset_uuid = null;
         $fileset_uuid = $this->assignment->file_set_id;
         if ( is_null($fileset_uuid)) {
             $fileset_uuid = uuid_create();

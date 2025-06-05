@@ -27,8 +27,8 @@ class extends Component {
     public function mount(Course $course): void
     {
         $this->course = $course;
-        $this->title = $info->title;
-        $this->description = $info->description;
+        $this->title = $course->title;
+        $this->description = $course->description;
     }
 
     public function rendering(View $view): void
