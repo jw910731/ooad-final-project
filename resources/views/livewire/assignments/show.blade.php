@@ -29,6 +29,7 @@ class extends Component {
         $this->course = $course;
         $this->assignment = $assignment;
         $this->userAssignment = $this->assignment->userAssignment()->where('user_id', auth()->user()->id)->first();
+        //dd($this->assignment->files()->get());
     }
 
     public function rendering(View $view): void
@@ -43,7 +44,6 @@ class extends Component {
         if ($assignment->course_id === $this->course->id) {
             $assignment->delete();
         }
-
         $this->redirectRoute('assignment.index', [$this->course]);
     }
 
@@ -73,7 +73,6 @@ class extends Component {
     public function deleteSubmission(File $target): void
     {
         $target->delete();
-        //dd($this->userAssignment);
     }
 }
 
@@ -81,36 +80,48 @@ class extends Component {
 
 <flux:container>
     <x-card>
-        <flux:heading class="flex items-center gap-2">{{ $this->assignment->title }}</flux:heading>
-        <flux:text class="mt-2 ml-6">{!! nl2br(e($this->assignment->description))  !!}</flux:text>
-        <flux:heading class="flex mt-6">
+        <div class="flex">
+            <div class="flex-1">
+                <flux:heading class="flex items-center gap-2">{{ $this->assignment->title }}</flux:heading>
+                <flux:text class="mt-2 ml-6">{!! nl2br(e($this->assignment->description))  !!}</flux:text>
+            </div>
+            @can('update', $this->assignment)
+                <flux:button :href="route('assignment.edit',[$course, $assignment])"
+                             class="mr-2"
+                >
+                    edit
+                </flux:button>
+            @endcan
+            @can('delete', $this->assignment)
+                <flux:button
+                    wire:click="deleteAssignment"
+                    variant="danger"
+                    wire:confirm="Are you sure you want to remove this assignment from the course?"
+                >
+                    <x-icon name="trash"/>
+                </flux:button>
+            @endcan
+        </div>
+        <flux:heading class="flex mt-2">
             Appendix
         </flux:heading>
-        @foreach($this->assignment->files as $file)
-            <x-card class="flex m-6">
-                <flux:text class="mt-1">
-                    <x-icon name="document" class="inline w-5 h-5"/>
-                    <a class="inline" href="{{Storage::temporaryUrl($file->path, now()->addMinute(5))}}">
-                        {{$file->name}}
-                    </a>
-                </flux:text>
-            </x-card>
-        @endforeach
+        @if(!is_null($temp = $this->assignment->files->first()))
+            @foreach($temp as $file)
+                <x-card class="flex m-6">
+                    <flux:text class="mt-1">
+                        <x-icon name="document" class="inline w-5 h-5"/>
+                        <a class="inline" href="{{Storage::temporaryUrl($file->path, now()->addMinute(5))}}">
+                            {{$file->name}}
+                        </a>
+                    </flux:text>
+                </x-card>
+            @endforeach
+        @else
+            <flux:text class="flex mt-2 mx-6">
+                There is no appendix of this assignment now
+            </flux:text>
+        @endif
     </x-card>
-    @can('update', $this->assignment)
-        <flux:button :href="route('assignment.edit',[$course, $assignment])">
-            Edit assignment
-        </flux:button>
-    @endcan
-    @can('delete', $this->assignment)
-        <flux:button
-            wire:click.prevent="deleteAssignment"
-            variant="danger"
-            onclick="if (!confirm('Are you sure you want to remove this assignment from the course?')) return false;"
-        >
-            Remove assignment
-        </flux:button>
-    @endcan
     <flux:heading class="flex mt-6">Submissions</flux:heading>
 {{--    grader's view--}}
     @can('update', $this->assignment)
@@ -118,7 +129,7 @@ class extends Component {
             <x-card class="flex m-6">
                 @if((!is_null($user->userAssignment()))
                     && !is_null( $tempUserAssignment = $user->userAssignment()->where('assignment_id',$this->assignment->id)->first())
-                    &&( $tempUserAssignment->files != []))
+                    && !is_null($tempUserAssignment->files()->first()))
                     <flux:heading class="flex">{{$user->name}}</flux:heading>
                     @foreach($tempUserAssignment->files as $file)
                         <x-card class="flex m-0">
@@ -161,7 +172,7 @@ class extends Component {
             @endforeach
         @else
             <flux:text class="mt-2 ml-6">
-                There is no submissions
+                There is no submissions now
             </flux:text>
         @endif
         <form wire:submit="saveSubmissions" class="mt-6">
