@@ -7,20 +7,28 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
 use Illuminate\View\View;
-
+use Livewire\WithFileUploads;
+//use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 new #[Layout('components.layouts.course')]
 class extends Component {
+    use WithFileUploads;
+
+    public Course $course;
+
     #[Validate('required|string')]
     public string $title = '';
 
     #[Validate('required|string')]
     public string $description = '';
 
-    #[Validate('required')]
-    public ?int $user_id = null;
 
-    public Course $course;
+    #[Validate([
+        'attachments' => 'array',
+        'attachments.*' => 'max:128000000' // 128MB
+    ])]
+    public $attachments = [];
 
+    public  $deadline;
     public function mount(Course $course): void
     {
         $this->course = $course;
@@ -33,12 +41,24 @@ class extends Component {
 
     public function assignmentCreate(): void
     {
-        $this->course->assignments()->create([
+        $validated = $this->validate();
+        $fileset_uuid = uuid_create();
+        $assignment = $this->course->assignments()->create([
             'course_id' => $this->course->id,
             'order' => 1,
             'title' => $this->title,
-            'description' => $this->description
+            'description' => $this->description,
+            'file_set_id' => $fileset_uuid,
+            'deadline' => $this->deadline,
         ]);
+        foreach ($validated['attachments'] as $attachment) {
+            $path = $attachment->store('attachment');
+            $name = $attachment->getClientOriginalName();
+            $file = $assignment->files()->create([
+                'name' => $name,
+                'path' => $path,
+            ]);
+        }
         $this->redirectRoute('assignment.index', $this->course);
     }
 }
@@ -55,17 +75,24 @@ class extends Component {
                 <flux:input class="mb-6" wire:model="title" :label="__('Assignment Title')" required
                             autofocus/>
                 <flux:textarea class="mb-6" wire:model="description" :label="__('Assignment Description')"/>
-                <x-select
-                    label="Teacher of the Assignment"
-                    placeholder="Select user as teacher"
-                    :async-data="[
-                        'api' => route('userSearch.search'),
-                        'params' => ['includeCourse' => $course->id, 'requireRole' => 'teacher'],
-                        'credentials' => 'include',
-                    ]"
-                    option-label="name"
-                    option-value="id"
-                    wire:model="user_id"/>
+
+                <div class="mt-4 mb-4">
+                    <flux:input type="file" wire:model="attachments" multiple/>
+                    @error('attachments.*') <span class="error">{{ $message }}</span> @enderror
+                    <div class="mx-6 mt-2">
+                        @foreach( $attachments as $attachment)
+                            <flux:text class="mt-2">
+                                {{ $attachment->getClientOriginalName() }}
+                            </flux:text>
+                        @endforeach
+                    </div>
+                </div>
+                <x-datetime-picker
+                    label="Appointment Date"
+                    placeholder="Appointment Date"
+                    parse-format="YYYY-MM-DD HH:mm:ss"
+                    wire:model.defer="deadline"
+                />
                 <div class="mb-6">
                     <flux:button variant="primary" type="submit" class="w-full">{{ __('Create') }}</flux:button>
                 </div>

@@ -21,7 +21,7 @@ class extends Component {
     #[Validate('required|numeric')]
     public $max_point = null;
 
-    #[Validate('required|exists:assignments,id')]
+    #[Validate('nullable|exists:assignments,id')]
     public $assignment_id = null;
 
     public function mount(Course $course): void
@@ -45,11 +45,12 @@ class extends Component {
             'max_point' => $validated['max_point'],
             'order' => 1, //i dont know how order effect us
         ]);
-        //dd($score);
-        $assignment = Assignment::find($validated['assignment_id']);
-        $assignment->update([
-            'score_id' => $score->id,
-        ]);
+        if(!is_null($this->assignment_id)){
+            $assignment = Assignment::find($validated['assignment_id']);
+            $assignment->update([
+                'score_id' => $score->id,
+            ]);
+        }
         $this->redirectRoute('score.index', [$course]);
     }
 

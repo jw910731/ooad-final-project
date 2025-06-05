@@ -70,7 +70,7 @@ class extends Component {
         }
 
         // redirect if there is no problem
-        $this->redirectRoute('score.index', [$this->course]);
+        $this->redirectRoute('score.show', [$this->course, $this->score]);
     }
 }
 

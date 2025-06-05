@@ -18,6 +18,7 @@ class Assignment extends Model
         'order',
         'title',
         'description',
+        'deadline',
         'file_set_id',
     ];
 

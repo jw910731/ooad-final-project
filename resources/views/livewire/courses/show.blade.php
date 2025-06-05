@@ -48,6 +48,7 @@ class extends component {
     </x-card>
     <flux:heading class="flex mt-2  items-center gap-2">Information</flux:heading>
     <div class="mt-2">
+
         @foreach($course->infos()->orderBy('order')->get() as $info)
             <x-card class="flex mx-0">
                 <div class="flex mx-4">

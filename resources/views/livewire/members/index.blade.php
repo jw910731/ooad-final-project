@@ -20,7 +20,7 @@ mount(function (Course $course) {
 
 ?>
 
-<section class="w-full">
+<flux:container class="w-full">
     @can('update', $course)
         <flux:button :href="route('member.add',[$course->id])">Add</flux:button>
     @endcan
@@ -42,4 +42,4 @@ mount(function (Course $course) {
             </a>
         @endforeach
     </div>
-</section>
+</flux:container>

@@ -4,6 +4,7 @@
 
 use App\Models\Assignment;
 use App\Models\Course;
+use App\Models\Score;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 use Illuminate\View\View;
@@ -24,29 +25,51 @@ class extends Component {
 
     public function deleteAssignment( Assignment $target): void
     {
-        if(!is_null($target)){
-            $target->userAssignment()->delete();
-            $target->delete();
+        //dd($target);
+        if(is_null($target)){
+            return;
         }
+        if(!is_null($score = $target->score)){
+            //dd($scoreTarget);
+            $score->userScores()->delete();
+            $score->delete();
+        }
+        if(!is_null($userAssignments = $target->userAssignment)){
+            foreach ( $userAssignments as $userAssignment){
+                $userAssignment->files()->delete();
+                $userAssignment->delete();
+            }
+        }
+        $target->files()->delete();
+        $target->delete();
     }
 }
 
 ?>
 
-<section class="w-full">
-    <div>
+<flux:container class="w-full">
+    <x-card>
+        <flux:heading class="flex my-2">Assignments</flux:heading>
+        @if( is_null($course->assignments()->first()))
+            <x-card>
+                <flux:text class="flex ml-6">There is no assignments now</flux:text>
+            </x-card>
+        @endif
         @foreach($course->assignments as $assignment)
             <a href="{{route('assignment.show', [$course, $assignment])}}">
-                <x-card class="flex-auto flex m-6">
+                <x-card class="flex-auto mt-2">
                     <div class="flex mx-4">
-                        <div class="flex-1 mx-0">
+                        <div class="flex-1">
                             <flux:heading class="flex-1 mt-2 items-center gap-2">{{$assignment->title}}</flux:heading>
-                            <flux:text class="flex my-2 mx-6">{!! nl2br(e($assignment->description)) !!}</flux:text>
+                        </div>
+                        <div class="flex-1">
+                                <flux:text class="flex mr-12">Deadline:</flux:text>
+                                <flux:text class="flex ml-12">{{ $assignment->deadline }}</flux:text>
                         </div>
                         @can('update', $this->course)
                             <flux:button variant="danger" class="flex mr-2"
-                                         wire:confirm="Are you sure you want to remove this info from this course?"
-                                         wire:click="deleteAssignment({{$assignment}})">
+                                         wire:confirm="Are you sure you want to remove this assignment from this course?"
+                                         wire:click.prevent="deleteAssignment({{$assignment}})">
                                 <x-icon name="trash"/>
                             </flux:button>
                         @endcan
@@ -54,8 +77,10 @@ class extends Component {
                 </x-card>
             </a>
         @endforeach
-    </div>
-    @can('update', $course)
-        <flux:button :href="route('assignment.create',$course)">Add</flux:button>
-    @endcan
-</section>
+        @can('update', $course)
+            <flux:button :href="route('assignment.create',$course)" class="mt-2">
+                Add
+            </flux:button>
+        @endcan
+    </x-card>
+</flux:container>
