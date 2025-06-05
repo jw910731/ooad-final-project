@@ -32,27 +32,41 @@ class extends component {
 ?>
 
 <flux:container>
-    <x-card>
-        <flux:heading class="flex items-center gap-2" style="font-size:16pt">{{ $this->course->title }}</flux:heading>
-        <flux:text class="mt-2 mx-6">{!! nl2br(e($this->course->description)) !!}</flux:text>
+    <x-card class="mt-2">
+        <div class="flex">
+            <div class="flex-1 mx-4">
+                <flux:heading class="flex items-center gap-2" style="font-size:14pt">{{ $this->course->title }}</flux:heading>
+                <flux:text class="mt-2 mx-6">{!! nl2br(e($this->course->description)) !!}</flux:text>
+            </div>
+            @can('update', $this->course)
+                <flux:button  class="flex mr-2"
+                              :href="route('courses.edit',[$this->course])">
+                    edit
+                </flux:button>
+            @endcan
+        </div>
     </x-card>
     <flux:heading class="flex mt-2  items-center gap-2">Information</flux:heading>
-    <div>
+    <div class="mt-2">
         @foreach($course->infos()->orderBy('order')->get() as $info)
             <x-card class="flex mx-0">
-                <div class="flex mx-0">
-                    <flux:heading class="flex-1 mt-2 items-center gap-2">{{$info->title}}</flux:heading>
-                    <flux:button  class="flex mr-2"
-                                 :href="route('courses.edit_info',[$this->course, $info])">
-                        edit
-                    </flux:button>
-                    <flux:button variant="danger" class="flex"
-                                 wire:confirm="Are you sure you want to remove this info from this course?"
-                                 wire:click="deleteInfo({{$info}})">
-                        <x-icon name="trash"/>
-                    </flux:button>
+                <div class="flex mx-4">
+                    <div class="flex-1 mx-0">
+                        <flux:heading class="flex-1 mt-2 items-center gap-2">{{$info->title}}</flux:heading>
+                        <flux:text class="flex my-2 mx-6">{!! nl2br(e($info->description)) !!}</flux:text>
+                    </div>
+                    @can('update', $this->course)
+                        <flux:button  class="flex mr-2"
+                                      :href="route('courses.edit_info',[$this->course, $info])">
+                            edit
+                        </flux:button>
+                        <flux:button variant="danger" class="flex mr-2"
+                                     wire:confirm="Are you sure you want to remove this info from this course?"
+                                     wire:click="deleteInfo({{$info}})">
+                            <x-icon name="trash"/>
+                        </flux:button>
+                    @endcan
                 </div>
-                <flux:text class="flex my-2 mx-6">{!! nl2br(e($info->description)) !!}</flux:text>
                 @foreach($info->files as $file)
                     <x-card>
                         <flux:text class="mt-2">

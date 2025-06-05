@@ -18,6 +18,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Volt::route('courses', 'courses.index')->name('courses.index');
     Volt::route('courses/create', 'courses.create')->can('create', Course::class)->name('courses.create');
     Volt::route('courses/{course}', 'courses.show')/*->can('view', 'course')*/->name('courses.show');
+    Volt::route('courses/{course}/edit', 'courses.edit')/*->can('update', 'course')*/->name('courses.edit');
     Volt::route('courses/{course}/add_info', 'courses.add_info')/*->can('update', 'course')*/->name('courses.add_info');
     Volt::route('courses/{course}/edit_info/{info}', 'courses.edit_info')/*->can('update', 'course')*/->name('courses.edit_info');
     Volt::route('courses/{course}/assignment', 'assignments.index')/*->can('view', 'course')*/->name('assignment.index');
