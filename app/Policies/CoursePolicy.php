@@ -22,17 +22,17 @@ class CoursePolicy
 
     public function update(User $user, Course $course): bool
     {
-        return $this->view($user, $course) && (($role = $user->courses()->find($course)->pivot->role) == 'teacher'
-                                                || $role == 'teaching_assistant');
+        return $user->system_admin || ($this->view($user, $course) && (($role = $user->courses()->find($course)->pivot->role) == 'teacher'
+                                                || $role == 'teaching_assistant')) ;
     }
 
     public function delete(User $user, Course $course): bool
     {
-        return $this->view($user, $course) && ($user->courses()->find($course)->pivot->role == 'teacher');
+        return  $user->system_admin || ($this->view($user, $course) && ($user->courses()->find($course)->pivot->role == 'teacher'));
     }
 
     public function updateMember(User $user, Course $course): bool
     {
-        return $this->view($user, $course) && (($role = $user->courses()->find($course)->pivot->role) == 'teacher');
+        return $user->system_admin || ($this->view($user, $course) && (($user->courses()->find($course)->pivot->role) == 'teacher'));
     }
 }

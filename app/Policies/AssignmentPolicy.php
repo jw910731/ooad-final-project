@@ -23,17 +23,17 @@ class AssignmentPolicy
 
     public function update(User $user, Assignment $assignment): bool
     {
-        return $this->view($user, $assignment) && ($user->can('update', Course::find($assignment->course_id)));
+        return $user->system_admin || ($this->view($user, $assignment) && ($user->can('update', Course::find($assignment->course_id))));
     }
 
     public function delete(User $user, Assignment $assignment): bool
     {
-        return $this->view($user, $assignment) && ($user->can('update', Course::find($assignment->course_id)));
+        return $user->system_admin || ($this->view($user, $assignment) && ($user->can('update', Course::find($assignment->course_id))));
     }
 
     public function submit(User $user, Assignment $assignment): bool
     {
-        return $this->view($user, $assignment) && ( is_null($assignment->deadline)||now()->isBefore( $assignment->deadline))
-                && ($user->courses()->find($assignment->course_id)->pivot->role == 'student');
+        return $user->system_admin || ($this->view($user, $assignment) && ( is_null($assignment->deadline)||now()->isBefore( $assignment->deadline))
+                && ($user->courses()->find($assignment->course_id)->pivot->role == 'student'));
     }
 }
