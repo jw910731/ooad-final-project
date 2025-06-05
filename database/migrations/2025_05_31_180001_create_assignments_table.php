@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('order');
             $table->string('title');
             $table->string('description');
+            $table->timestamp('deadline')->nullable();
             $table->foreignUuid('file_set_id')->nullable();
             $table->timestamps();
         });

@@ -24,7 +24,7 @@ mount(function (Course $course) {
     @can('update', $course)
         <flux:button :href="route('member.add',[$course->id])">Add</flux:button>
     @endcan
-    <flux:container class="flex">
+    <div class="flex">
         @foreach( $course->users as $member)
             <a href="{{route('member.show', [$course, $member])}}">
                 <x-card class="flex-auto flex m-6">
@@ -41,5 +41,5 @@ mount(function (Course $course) {
                 </x-card>
             </a>
         @endforeach
-    </flux:container>
+    </div>
 </section>
