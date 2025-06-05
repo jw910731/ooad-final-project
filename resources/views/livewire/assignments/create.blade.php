@@ -8,7 +8,7 @@ use Livewire\Attributes\Validate;
 use Livewire\Volt\Component;
 use Illuminate\View\View;
 use Livewire\WithFileUploads;
-
+//use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 new #[Layout('components.layouts.course')]
 class extends Component {
     use WithFileUploads;
@@ -28,6 +28,7 @@ class extends Component {
     ])]
     public $attachments = [];
 
+    public  $deadline;
     public function mount(Course $course): void
     {
         $this->course = $course;
@@ -48,6 +49,7 @@ class extends Component {
             'title' => $this->title,
             'description' => $this->description,
             'file_set_id' => $fileset_uuid,
+            'deadline' => $this->deadline,
         ]);
         foreach ($validated['attachments'] as $attachment) {
             $path = $attachment->store('attachment');
@@ -77,8 +79,20 @@ class extends Component {
                 <div class="mt-4 mb-4">
                     <flux:input type="file" wire:model="attachments" multiple/>
                     @error('attachments.*') <span class="error">{{ $message }}</span> @enderror
+                    <div class="mx-6 mt-2">
+                        @foreach( $attachments as $attachment)
+                            <flux:text class="mt-2">
+                                {{ $attachment->getClientOriginalName() }}
+                            </flux:text>
+                        @endforeach
+                    </div>
                 </div>
-
+                <x-datetime-picker
+                    label="Appointment Date"
+                    placeholder="Appointment Date"
+                    parse-format="YYYY-MM-DD HH:mm:ss"
+                    wire:model.defer="deadline"
+                />
                 <div class="mb-6">
                     <flux:button variant="primary" type="submit" class="w-full">{{ __('Create') }}</flux:button>
                 </div>

@@ -80,7 +80,7 @@ class extends Component {
         <div class="flex">
             <div class="flex-1">
                 <flux:heading class="flex items-center gap-2">{{ $this->assignment->title }}</flux:heading>
-                <flux:text class="mt-2 ml-6">{!! nl2br(e($this->assignment->description))  !!}</flux:text>
+                <flux:text class="flex mt-2 ml-12">{!! nl2br(e($this->assignment->description))  !!}</flux:text>
             </div>
             @can('update', $this->assignment)
                 <flux:button :href="route('assignment.edit',[$course, $assignment])"
@@ -112,7 +112,7 @@ class extends Component {
     </x-card>
     <flux:heading class="flex mt-6">Submissions</flux:heading>
 {{--    grader's view--}}
-    @can('update', $this->assignment)
+    @if(auth()->user()->can('update', $this->assignment))
         @foreach( $this->course->users()->where('role','student')->get() as $user)
             <x-card class="flex m-6">
                 <flux:heading class="flex">{{$user->name}}</flux:heading>
@@ -138,9 +138,8 @@ class extends Component {
                 @endif
             </x-card>
         @endforeach
-    @endcan
-{{--    student's view--}}
-    @can('submit', $this->assignment)
+    @else
+        {{--    student's view--}}
         @if((!is_null($this->userAssignment))&&($this->userAssignment->files != []))
             @foreach($this->userAssignment->files as $file)
                 <x-card class="flex m-6">
@@ -164,6 +163,9 @@ class extends Component {
                 There is no submissions now
             </flux:text>
         @endif
+    @endif
+{{--    student's view--}}
+    @can('submit', $this->assignment)
         <form wire:submit="saveSubmissions" class="mt-6">
             <flux:input type="file" wire:model="attachments" :label="__('Submits')" multiple/>
             @error('attachments.*') <span class="error">{{ $message }}</span> @enderror

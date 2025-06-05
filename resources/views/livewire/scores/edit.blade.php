@@ -62,7 +62,7 @@ class extends Component {
             ]);
         }
 
-        $this->redirectRoute('score.index', [$this->course]);
+        $this->redirectRoute('score.show', [$this->course, $this->score]);
     }
 }
 ?>

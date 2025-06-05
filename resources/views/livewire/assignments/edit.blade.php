@@ -29,6 +29,7 @@ class extends Component {
     public Course $course;
     public Assignment $assignment;
 
+    public  $deadline;
 
     public function mount(Course $course, Assignment $assignment): void
     {
@@ -36,11 +37,13 @@ class extends Component {
         $this->assignment = $assignment;
         $this->title = $assignment->title;
         $this->description = $assignment->description;
+        $this->deadline = $assignment->deadline;
     }
 
     public function rendering(View $view): void
     {
-        $view->layoutData(['course' => $this->course]);
+        $view->layoutData(['course' => $this->course, 'assignment' => $this->assignment,
+                            'deadline' => $this->deadline]);
     }
 
     public function save(): void
@@ -53,7 +56,8 @@ class extends Component {
         $this->assignment->update(
             ['title' => $validated['title'],
              'description' => $validated['description'],
-             'file_set_id' => $fileset_uuid,]
+             'file_set_id' => $fileset_uuid,
+                'deadline' => $this->deadline,]
         );
         foreach ($validated['attachments'] as $attachment) {
             $path = $attachment->store('attachment');
@@ -108,6 +112,12 @@ class extends Component {
                     <flux:input type="file" wire:model="attachments" multiple/>
                     @error('attachments.*') <span class="error">{{ $message }}</span> @enderror
                 </div>
+                <x-datetime-picker
+                    label="Appointment Date"
+                    placeholder="{{ $this->deadline }}"
+                    parse-format="YYYY-MM-DD HH:mm:ss"
+                    wire:model.defer="deadline"
+                />
                 <div class="mb-6">
                     <flux:button variant="primary" type="submit" class="w-full">{{ __('Save') }}</flux:button>
                 </div>

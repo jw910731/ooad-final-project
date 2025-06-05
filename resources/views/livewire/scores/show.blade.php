@@ -19,7 +19,6 @@ class extends Component {
         $this->userScores = UserScore::with('user')
             ->where('score_id', $score->id)
             ->get();
-        //dd($this->userScores);
     }
 
     public function rendering(View $view): void
@@ -32,10 +31,19 @@ class extends Component {
 ?>
 
 <flux:container>
-    <flux:heading class="flex items-center gap-2">{{ $this->score->title }}</flux:heading>
-    <flux:text class="mt-2 ml-6">{!!  nl2br(e($this->score->description)) !!}</flux:text>
-    <flux:text class="mt-2">Max Point: {{ $this->score->max_point }}</flux:text>
-    <x-card>
+    <x-card class="flex">
+        <div class="flex">
+            <div class="flex-1">
+                <flux:heading class="flex items-center gap-2">{{ $this->score->title }}</flux:heading>
+                <flux:text class="mt-2 ml-6">{!!  nl2br(e($this->score->description)) !!}</flux:text>
+                <flux:heading class="mt-2">Max Point: {{ $this->score->max_point }}</flux:text>
+            </div>
+            @can('update', $course)
+                <flux:button class="flex" :href="route('score.edit', [$course->id, $score->id])">Edit score rule</flux:button>
+            @endcan
+        </div>
+    </x-card>
+    <x-card class="mt-2">
         <flux:heading class="flex items-center gap-2 mt-2">
             Related Assignment
         </flux:heading>
@@ -43,18 +51,17 @@ class extends Component {
             <a href="{{route('assignment.show', [$course->id, $score->assignment->id])}}">
                 <x-card class="flex-auto">
                     <flux:heading class="flex items-center gap-2">{{ $score->assignment->title }}</flux:heading>
-                    <flux:text class="mt-2">{!! nl2br(e($score->assignment->description))  !!}</flux:text>
+                    <flux:text class="mt-2 ml-6">{!! nl2br(e($score->assignment->description))  !!}</flux:text>
                 </x-card>
             </a>
         @endif
     </x-card>
 
     @can('update', $course)
-        <flux:button :href="route('score.adduser',[$course, $score])">Add points to students</flux:button>
-        <flux:button :href="route('score.edit', [$course->id, $score->id])">Edit score rule</flux:button>
+        <flux:button class="mt-2" :href="route('score.adduser',[$course, $score])">Add points to students</flux:button>
     @endcan
 
-    <table class="mt-4 w-full">
+    <table class="mt-2 w-full">
         <thead>
         <tr>
             <th class="text-left">Student Name</th>
@@ -63,25 +70,29 @@ class extends Component {
         </thead>
         <tbody>
         @foreach($course->users()->where('role', 'student')->get() as $student)
-            <tr @click="window.location='{{ route('score.edituser', [$course, $score, $student]) }}'"
-                class="cursor-pointer hover:bg-gray-100">
-                <td>
-                    <flux:text>
-                        {{ $student->name }}
-                    </flux:text>
-                </td>
-                @if(!is_null($temp = $userScores->where('user_id', $student->id)->first()))
+            @if( auth()->user()->can( 'update', $course))
+                <tr @click="window.location='{{ route('score.edituser', [$course, $score, $student]) }}'"
+                    class="cursor-pointer hover:bg-gray-100">
+            @else
+                <tr>
+            @endif
                     <td>
                         <flux:text>
-                            {{ $userScores->where('user_id', $student->id)->first()->score_point }}
+                            {{ $student->name }}
                         </flux:text>
                     </td>
-                @else
-                    <td>
-                        <flux:text>No record</flux:text>
-                    </td>
-                @endif
-            </tr>
+                    @if(!is_null($temp = $userScores->where('user_id', $student->id)->first()))
+                        <td>
+                            <flux:text>
+                                {{ $userScores->where('user_id', $student->id)->first()->score_point }}
+                            </flux:text>
+                        </td>
+                    @else
+                        <td>
+                            <flux:text>Not graded</flux:text>
+                        </td>
+                    @endif
+                </tr>
         @endforeach
         </tbody>
     </table>

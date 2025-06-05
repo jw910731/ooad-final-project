@@ -14,8 +14,8 @@ class extends Component {
     public Score $score;
     public User $user;
 
-    #[Validate('required|integer|min:0')]
-    public int $score_point;
+    #[Validate('nullable|integer|min:0')]
+    public int|null $score_point = null;
 
     public function mount(Course $course, Score $score, User $user): void
     {
@@ -25,14 +25,15 @@ class extends Component {
 
         $userScore = UserScore::where('score_id', $score->id)
             ->where('user_id', $user->id)
-            ->firstOrFail();
-
-        $this->score_point = $userScore->score_point;
+            ->first();
+        if(!is_null($userScore)){
+            $this->score_point = $userScore->score_point;
+        }
     }
 
     public function update(): void
     {
-        $this->validate();
+        $validated = $this->validate();
 
         UserScore::updateOrCreate(
             [
@@ -40,7 +41,7 @@ class extends Component {
                 'user_id' => $this->user->id,
             ],
             [
-                'score_point' => $this->score_point,
+                'score_point' => $validated['score_point'],
             ]
         );
 
@@ -51,13 +52,13 @@ class extends Component {
 
     public function rendering($view): void
     {
-        $view->layoutData(['course' => $this->course]);
+        $view->layoutData(['course' => $this->course, 'score' => $this->score, 'user' => $this->user]);
     }
 }
 
 ?>
 <flux:container>
-    <flux:heading class="mb-4">Edit Score for {{ $user->name }}</flux:heading>
+    <flux:heading class="mt-4">Edit Score for {{ $user->name }}</flux:heading>
 
     <x-card class="p-6">
         <form wire:submit="update">
@@ -67,7 +68,6 @@ class extends Component {
                 min="0"
                 max="{{ $score->max_point }}"
                 wire:model="score_point"
-                required
             />
 
             @error('score_point')

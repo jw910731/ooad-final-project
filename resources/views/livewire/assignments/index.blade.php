@@ -57,11 +57,14 @@ class extends Component {
         @endif
         @foreach($course->assignments as $assignment)
             <a href="{{route('assignment.show', [$course, $assignment])}}">
-                <x-card class="flex-auto">
+                <x-card class="flex-auto mt-2">
                     <div class="flex mx-4">
                         <div class="flex-1">
                             <flux:heading class="flex-1 mt-2 items-center gap-2">{{$assignment->title}}</flux:heading>
-                            <flux:text class="flex my-2">{!! nl2br(e($assignment->description)) !!}</flux:text>
+                        </div>
+                        <div class="flex-1">
+                                <flux:text class="flex mr-12">Deadline:</flux:text>
+                                <flux:text class="flex ml-12">{{ $assignment->deadline }}</flux:text>
                         </div>
                         @can('update', $this->course)
                             <flux:button variant="danger" class="flex mr-2"
